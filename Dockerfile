@@ -1,5 +1,5 @@
 # Base imagem with PHP 7.1
-FROM php:7.1
+FROM php:7.2
 
 # Update packages
 RUN apt-get update
@@ -23,7 +23,7 @@ RUN apt-get install -qq \
 RUN apt-get install -qq git curl libmcrypt-dev libjpeg-dev libpng-dev libfreetype6-dev libbz2-dev
 
 # Clear out the local repository of retrieved package files
-RUN apt-get clean
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PECL and PEAR extensions
 RUN pecl install \
@@ -35,10 +35,13 @@ RUN docker-php-ext-enable \
 
 # Install needed extensions
 RUN docker-php-ext-install \
-    mcrypt \
+    mbstring \
     gd \
     pdo_mysql \
     zip
+    
+RUN docker-php-ext-configure gd --with-gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-png-dir=/usr/include/
+RUN docker-php-ext-install gd
 
 # Install Composer
 RUN curl --silent --show-error https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer

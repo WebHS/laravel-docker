@@ -1,4 +1,4 @@
-# Base imagem with PHP 7.1
+# Base imagem with PHP 7.2
 FROM php:7.2
 
 # Update packages
